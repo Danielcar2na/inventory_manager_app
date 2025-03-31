@@ -32,12 +32,12 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  // Métodos para Inventarios
+
   Future<int> insertInventory(InventoriesCompanion inventory) => into(inventories).insert(inventory);
   Future<List<Inventory>> getAllInventories() => select(inventories).get();
   Future<int> deleteInventory(int id) => (delete(inventories)..where((tbl) => tbl.id.equals(id))).go();
 
-  // Métodos para Productos
+
   Future<int> insertProduct(ProductsCompanion product) => into(products).insert(product);
   Future<List<Product>> getProductsByInventory(int inventoryId) =>
       (select(products)..where((tbl) => tbl.inventoryId.equals(inventoryId))).get();
