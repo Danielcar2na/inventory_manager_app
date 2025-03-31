@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:inventory_manager/data/database/app_database.dart';
 import 'package:inventory_manager/data/models/inventory_model.dart';
+import 'package:inventory_manager/data/repositories/inventory_repository.dart';
+import 'package:inventory_manager/data/repositories/inventory_repository_impl.dart';
 
 part 'inventory_event.dart';
 part 'inventory_state.dart';

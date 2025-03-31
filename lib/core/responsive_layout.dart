@@ -15,9 +15,9 @@ class ResponsiveLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 600) {
-          return webBody; // Pantallas grandes (tablets y web)
+          return webBody;
         } else {
-          return mobileBody; // Móviles
+          return mobileBody; 
         }
       },
     );
