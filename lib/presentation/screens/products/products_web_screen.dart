@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_manager/logic/bloc/product/product_bloc_web.dart';
-import 'package:inventory_manager/presentation/widgets/card_products_custom.dart';
+import 'package:inventory_manager/presentation/widgets/card_products_custom_web.dart';
 
 class ProductsWebScreen extends StatefulWidget {
   final int inventoryId;
@@ -21,55 +21,76 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Productos del Inventario (Web)')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddProductDialog(context),
-        backgroundColor: Colors.blueAccent,
-        child: const Icon(Icons.add, color: Colors.white),
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlueAccent,
+        title: const Text('P R O D U C T S', style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        elevation: 40,
       ),
-      body: BlocBuilder<ProductBlocWeb, ProductStateWeb>(
-        builder: (context, state) {
-          if (state is ProductLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProductLoaded) {
-            final products = state.products
-                .where((p) => p.inventoryId == widget.inventoryId)
-                .toList();
-
-            if (products.isEmpty) {
-              return const Center(child: Text('No hay productos en este inventario'));
-            }
-
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 2.2,
-                children: products.map((product) {
-                  return CardProductCustom(
-                    height: screenSize.height,
-                    width: screenSize.width,
-                    name: product.name,
-                    barcode: product.barcode ?? '',
-                    cant: product.quantity,
-                    price: product.price.toInt(),
-                    onEdit: () => _showEditProductDialog(context, product),
-                    onDelete: () => _deleteProduct(product.id),
-                  );
-                }).toList(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightBlueAccent,
+        onPressed: () => _showAddProductDialog(context),
+        child: const Icon(Icons.add),
+      ),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: width * 0.02),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: height * 0.04),
+              const Text(
+                'P R O D U C T S   L I S T',
+                style: TextStyle(fontSize: 30),
               ),
-            );
-          } else if (state is ProductError) {
-            return Center(child: Text(state.message));
-          }
+              SizedBox(height: height * 0.04),
+              BlocBuilder<ProductBlocWeb, ProductStateWeb>(
+                builder: (context, state) {
+                  if (state is ProductLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ProductLoaded) {
+                    final products = state.products
+                        .where((p) => p.inventoryId == widget.inventoryId)
+                        .toList();
 
-          return const Center(child: Text('Cargando...'));
-        },
+                    if (products.isEmpty) {
+                      return const Center(child: Text('No hay productos en este inventario'));
+                    }
+
+                    return Wrap(
+                      spacing: 16,
+                      runSpacing: 16,
+                      children: products.map((product) {
+                        return CardProductCustomWeb(
+                          height: height,
+                          width: width * 0.3,
+                          name: product.name,
+                          barcode: product.barcode ?? '',
+                          cant: product.quantity,
+                          price: product.price.toInt(),
+                          onEdit: () => _showEditProductDialog(context, product),
+                          onDelete: () => _deleteProduct(product.id),
+                        );
+                      }).toList(),
+                    );
+                  } else if (state is ProductError) {
+                    return Center(child: Text(state.message));
+                  }
+                  return const Center(child: Text('Cargando...'));
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
