@@ -6,7 +6,7 @@ class CardCustomWeb extends StatelessWidget {
     required this.height,
     required this.width,
     required this.title,
-    required this.cant,
+    required this.id,
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
@@ -15,7 +15,7 @@ class CardCustomWeb extends StatelessWidget {
   final double height;
   final double width;
   final String title;
-  final String cant;
+  final String id;
   final GestureTapCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -58,22 +58,35 @@ class CardCustomWeb extends StatelessWidget {
               ),
               const Spacer(),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: height * 0.02),
+                      Expanded(
+                        child: Text(
+                          title.length > 16 ? title.substring(0, 16) : title,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          id,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    cant,
-                    style: TextStyle(color: Colors.black),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(width: width * 0.2,),
+                  SizedBox(width: width * 0.10),
 
                   IconButton(
                     onPressed: onEdit,

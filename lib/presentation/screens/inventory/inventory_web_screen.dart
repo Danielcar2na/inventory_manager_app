@@ -65,9 +65,9 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
                         children: state.items.map((inventory) {
                           return CardCustomWeb(
                             height: height,
-                            width: width * 0.3,
+                            width: width * 0.28,
                             title: inventory.name,
-                            cant: 'ID: ${inventory.id}',
+                            id: 'ID: ${inventory.id}',
                             onTap: () {
                               Navigator.push(
                                 context,

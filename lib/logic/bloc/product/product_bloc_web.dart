@@ -54,21 +54,22 @@ class ProductBlocWeb extends Bloc<ProductEventWeb, ProductStateWeb> {
     }
   }
 
-  Future<void> _onUpdateProduct(
-      UpdateProduct event, Emitter<ProductStateWeb> emit) async {
-    try {
-      final updatedProduct = ProductModel(
-        id: event.id,
-        inventoryId: event.inventoryId,
-        name: event.name,
-        barcode: event.barcode,
-        price: event.price,
-        quantity: event.quantity,
-      );
-      await repository.updateProduct(updatedProduct);
-      add(LoadProducts(inventoryId: event.inventoryId));
-    } catch (e) {
-      emit(ProductError(message: 'Error al actualizar producto: $e'));
-    }
+ Future<void> _onUpdateProduct(
+    UpdateProduct event, Emitter<ProductStateWeb> emit) async {
+  try {
+    final updatedProduct = ProductModel(
+      id: event.id,
+      inventoryId: event.inventoryId,
+      name: event.name,
+      barcode: event.barcode,
+      price: event.price,
+      quantity: event.quantity,
+    );
+    await repository.updateProduct(updatedProduct);
+    add(LoadProducts(inventoryId: event.inventoryId));
+  } catch (e) {
+    emit(ProductError(message: 'Error al actualizar producto: $e'));
   }
+}
+
 }
