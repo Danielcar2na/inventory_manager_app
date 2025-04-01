@@ -37,6 +37,25 @@ class InventoryRepositoryPrefs implements InventoryRepository {
     await _saveInventories(inventories);
   }
 
+@override
+Future<void> updateInventory(int id, String newName) async {
+  final inventories = await getInventories();
+  final updatedInventories = inventories.map((inv) {
+    if (inv.id == id) {
+      return InventoryModel(
+        id: inv.id,
+        name: newName,
+        quantity: inv.quantity,
+        price: inv.price,
+      );
+    }
+    return inv;
+  }).toList();
+  await _saveInventories(updatedInventories);
+}
+
+
+
   Future<void> _saveInventories(List<InventoryModel> inventories) async {
     final jsonString =
         json.encode(inventories.map((e) => e.toJson()).toList());

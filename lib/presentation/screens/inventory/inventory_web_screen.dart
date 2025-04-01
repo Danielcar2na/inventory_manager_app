@@ -75,7 +75,8 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
                                   builder: (context) => BlocProvider.value(
                                     value: context.read<ProductBlocWeb>(),
                                     child: ProductsWebScreen(
-                                        inventoryId: inventory.id),
+                                      inventoryId: inventory.id,
+                                    ),
                                   ),
                                 ),
                               );
@@ -120,10 +121,8 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
           TextButton(
             onPressed: () {
               if (nameController.text.isNotEmpty) {
-                context
-                    .read<InventoryBlocWeb>()
-                    .add(AddInventoryWeb(nameController.text));
-                context.read<InventoryBlocWeb>().add(LoadInventoriesWeb());
+                context.read<InventoryBlocWeb>().add(
+                    AddInventoryWeb(nameController.text));
               }
               Navigator.pop(context);
             },
@@ -151,11 +150,12 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
           TextButton(
             onPressed: () {
               if (nameController.text.isNotEmpty) {
-                context.read<InventoryBlocWeb>().add(DeleteInventoryWeb(id));
-                context
-                    .read<InventoryBlocWeb>()
-                    .add(AddInventoryWeb(nameController.text));
-                context.read<InventoryBlocWeb>().add(LoadInventoriesWeb());
+                context.read<InventoryBlocWeb>().add(
+                  UpdateInventoryWeb(
+                    id: id,
+                    newName: nameController.text,
+                  ),
+                );
               }
               Navigator.pop(context);
             },

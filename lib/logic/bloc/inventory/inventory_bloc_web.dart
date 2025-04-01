@@ -8,11 +8,12 @@ part 'inventory_state_web.dart';
 
 class InventoryBlocWeb extends Bloc<InventoryEventWeb, InventoryStateWeb> {
   final InventoryRepository repository;
-
+ 
   InventoryBlocWeb({required this.repository}) : super(InventoryInitialWeb()) {
     on<LoadInventoriesWeb>(_onLoadInventories);
     on<AddInventoryWeb>(_onAddInventory);
     on<DeleteInventoryWeb>(_onDeleteInventory);
+    on<UpdateInventoryWeb>(_onUpdateInventoryWeb);
   }
 
   Future<void> _onLoadInventories(
@@ -51,4 +52,16 @@ class InventoryBlocWeb extends Bloc<InventoryEventWeb, InventoryStateWeb> {
       emit(InventoryErrorWeb(message: 'Error deleting inventory: $e'));
     }
   }
+
+  Future<void> _onUpdateInventoryWeb(
+  UpdateInventoryWeb event, Emitter<InventoryStateWeb> emit) async {
+  try {
+    await repository.updateInventory(event.id, event.newName);
+    add(LoadInventoriesWeb());
+  } catch (e) {
+    emit(InventoryErrorWeb(message: 'Error al actualizar inventario: ${e.toString()}'));
+  }
+}
+
+
 }

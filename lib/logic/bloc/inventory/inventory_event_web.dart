@@ -24,3 +24,12 @@ class DeleteInventoryWeb extends InventoryEventWeb {
   @override
   List<Object?> get props => [id];
 }
+class UpdateInventoryWeb extends InventoryEventWeb {
+  final int id;
+  final String newName;
+
+  const UpdateInventoryWeb({required this.id, required this.newName});
+
+  @override
+  List<Object?> get props => [id, newName];
+}
