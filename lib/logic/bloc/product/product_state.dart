@@ -12,7 +12,7 @@ class ProductInitial extends ProductState {}
 class ProductLoading extends ProductState {}
 
 class ProductLoaded extends ProductState {
-  final List<Product> products;
+  final List<ProductModel> products;
 
   const ProductLoaded({required this.products});
 

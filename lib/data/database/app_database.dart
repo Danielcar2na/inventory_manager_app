@@ -1,54 +1,69 @@
-import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-
 import 'dart:io';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-part 'app_database.g.dart';
+class AppDatabase {
+  late Database _db;
 
+  Future<void> init() async {
+    sqfliteFfiInit();
+    final dbPath = join(Directory.current.path, 'app_database.sqlite');
+    final databaseFactory = databaseFactoryFfi;
 
-class Inventories extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text().withLength(min: 1, max: 50)();
-  DateTimeColumn get createdAt => dateTime().clientDefault(() => DateTime.now())();
-}
+    _db = await databaseFactory.openDatabase(
+      dbPath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute('''
+            CREATE TABLE inventories (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL,
+              createdAt TEXT NOT NULL
+            );
+          ''');
 
+          await db.execute('''
+            CREATE TABLE products (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL,
+              quantity INTEGER DEFAULT 0,
+              inventoryId INTEGER NOT NULL,
+              barcode TEXT,
+              price REAL NOT NULL,
+              FOREIGN KEY (inventoryId) REFERENCES inventories(id) ON DELETE CASCADE
+            );
+          ''');
+        },
+      ),
+    );
+  }
 
-class Products extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text().withLength(min: 1, max: 50)();
-  IntColumn get quantity => integer().withDefault(Constant(0))();
-  IntColumn get inventoryId => integer().references(Inventories, #id, onDelete: KeyAction.cascade)();
-  TextColumn get barcode => text().nullable()();
-  RealColumn get price => real()(); 
-}
+  Future<int> insertInventory(Map<String, dynamic> inventory) async {
+    return await _db.insert('inventories', inventory);
+  }
 
+  Future<List<Map<String, dynamic>>> getAllInventories() async {
+    return await _db.query('inventories');
+  }
 
+  Future<int> deleteInventory(int id) async {
+    return await _db.delete('inventories', where: 'id = ?', whereArgs: [id]);
+  }
 
-@DriftDatabase(tables: [Inventories, Products])
-class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  Future<int> insertProduct(Map<String, dynamic> product) async {
+    return await _db.insert('products', product);
+  }
 
-  @override
-  int get schemaVersion => 1;
+  Future<List<Map<String, dynamic>>> getProductsByInventory(int inventoryId) async {
+    return await _db.query(
+      'products',
+      where: 'inventoryId = ?',
+      whereArgs: [inventoryId],
+    );
+  }
 
-
-  Future<int> insertInventory(InventoriesCompanion inventory) => into(inventories).insert(inventory);
-  Future<List<Inventory>> getAllInventories() => select(inventories).get();
-  Future<int> deleteInventory(int id) => (delete(inventories)..where((tbl) => tbl.id.equals(id))).go();
-
-
-  Future<int> insertProduct(ProductsCompanion product) => into(products).insert(product);
-  Future<List<Product>> getProductsByInventory(int inventoryId) =>
-      (select(products)..where((tbl) => tbl.inventoryId.equals(inventoryId))).get();
-  Future<int> deleteProduct(int id) => (delete(products)..where((tbl) => tbl.id.equals(id))).go();
-}
-
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'app_database.sqlite'));
-    return NativeDatabase(file);
-  });
+  Future<int> deleteProduct(int id) async {
+    return await _db.delete('products', where: 'id = ?', whereArgs: [id]);
+  }
 }

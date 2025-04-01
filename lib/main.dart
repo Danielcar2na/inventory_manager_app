@@ -16,60 +16,49 @@ import 'package:inventory_manager/presentation/screens/inventory/inventory_scree
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (kIsWeb) {
-    final prefs = await SharedPreferences.getInstance();
-    final inventoryRepo = InventoryRepositoryPrefs(sharedPreferences: prefs);
-    final productRepo = ProductRepositorySharedPref(sharedPreferences: prefs);
+  final prefs = await SharedPreferences.getInstance();
+  final inventoryRepo = InventoryRepositoryPrefs(sharedPreferences: prefs);
+  final productRepo = ProductRepositorySharedPref(sharedPreferences: prefs);
 
-    runApp(MyApp.web(
-      inventoryRepository: inventoryRepo,
-      productRepository: productRepo,
-    ));
-  } else {
-    final database = AppDatabase();
-    runApp(MyApp.mobile(appDatabase: database));
-  }
+  runApp(MyApp(
+    inventoryRepository: inventoryRepo,
+    productRepository: productRepo,
+  ));
 }
 
+
 class MyApp extends StatelessWidget {
-  final AppDatabase? appDatabase;
-  final InventoryRepository? inventoryRepository;
-  final ProductRepository? productRepository;
+  final InventoryRepository inventoryRepository;
+  final ProductRepository productRepository;
 
-  const MyApp.mobile({Key? key, required this.appDatabase})
-      : inventoryRepository = null,
-        productRepository = null,
-        super(key: key);
-
-  const MyApp.web({
+  const MyApp({
     Key? key,
     required this.inventoryRepository,
     required this.productRepository,
-  })  : appDatabase = null,
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        if (kIsWeb)
-          BlocProvider(
-              create: (_) => InventoryBlocWeb(repository: inventoryRepository!))
-        else
-        //   BlocProvider(
-        //       create: (_) => InventoryBloc(database: appDatabase!)),
+        kIsWeb
+            ? BlocProvider(
+                create: (_) =>
+                    InventoryBlocWeb(repository: inventoryRepository))
+            : BlocProvider(
+                create: (_) => InventoryBloc(repository: inventoryRepository)),
 
-        // if (kIsWeb)
-          BlocProvider(
-              create: (_) => ProductBlocWeb(repository: productRepository!))
-        // else
-        //   BlocProvider(create: (_) => ProductBloc(database: appDatabase!)),
+        kIsWeb
+            ? BlocProvider(
+                create: (_) => ProductBlocWeb(repository: productRepository))
+            : BlocProvider(
+                create: (_) => ProductBloc(repository: productRepository)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Inventario',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: InventoryScreen(),
+        home:  InventoryScreen(),
       ),
     );
   }

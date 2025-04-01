@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_manager/logic/bloc/inventory/inventory_bloc_web.dart';
 import 'package:inventory_manager/logic/bloc/product/product_bloc_web.dart';
-import 'package:inventory_manager/presentation/screens/products/products_mobile_screen.dart';
+import 'package:inventory_manager/presentation/screens/products/products_web_screen.dart';
 import 'package:inventory_manager/presentation/widgets/card_custom.dart';
 
 class InventoryWebScreen extends StatefulWidget {
@@ -22,16 +22,16 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Inventario Web')),
+      appBar: AppBar(title: const Text('Inventario Web')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddDialog(context),
         backgroundColor: Colors.blueAccent,
-        child: Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: BlocBuilder<InventoryBlocWeb, InventoryStateWeb>(
         builder: (context, state) {
           if (state is InventoryLoadingWeb) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (state is InventoryLoadedWeb) {
             return Padding(
               padding: const EdgeInsets.all(24.0),
@@ -48,7 +48,7 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
                         MaterialPageRoute(
                           builder: (context) => BlocProvider.value(
                             value: context.read<ProductBlocWeb>(),
-                            child: ProductsMobile(inventoryId: inventory.id),
+                            child: ProductsWebScreen(inventoryId: inventory.id),
                           ),
                         ),
                       );
@@ -68,7 +68,7 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
               ),
             );
           } else {
-            return Center(child: Text('Error al cargar inventario'));
+            return const Center(child: Text('Error al cargar inventario'));
           }
         },
       ),
@@ -80,15 +80,15 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Agregar Inventario'),
+        title: const Text('Agregar Inventario'),
         content: TextField(
           controller: nameController,
-          decoration: InputDecoration(hintText: 'Nombre'),
+          decoration: const InputDecoration(hintText: 'Nombre'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
+            child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () {
@@ -98,7 +98,7 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
               }
               Navigator.pop(context);
             },
-            child: Text('Agregar'),
+            child: const Text('Agregar'),
           ),
         ],
       ),
@@ -110,15 +110,15 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Editar Inventario'),
+        title: const Text('Editar Inventario'),
         content: TextField(
           controller: nameController,
-          decoration: InputDecoration(hintText: 'Nuevo Nombre'),
+          decoration: const InputDecoration(hintText: 'Nuevo Nombre'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
+            child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () {
@@ -129,7 +129,7 @@ class _InventoryWebScreenState extends State<InventoryWebScreen> {
               }
               Navigator.pop(context);
             },
-            child: Text('Guardar'),
+            child: const Text('Guardar'),
           ),
         ],
       ),
