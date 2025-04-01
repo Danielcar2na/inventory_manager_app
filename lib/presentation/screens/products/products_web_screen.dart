@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inventory_manager/logic/bloc/product/product_bloc.dart';
+import 'package:inventory_manager/logic/bloc/product/product_bloc_web.dart';
 import 'package:inventory_manager/presentation/widgets/card_products_custom.dart';
 
 class ProductsWebScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(LoadProducts(inventoryId: widget.inventoryId));
+    context.read<ProductBlocWeb>().add(LoadProducts(inventoryId: widget.inventoryId));
   }
 
   @override
@@ -30,7 +30,7 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
         backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      body: BlocBuilder<ProductBloc, ProductState>(
+      body: BlocBuilder<ProductBlocWeb, ProductStateWeb>(
         builder: (context, state) {
           if (state is ProductLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -55,7 +55,7 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
                     height: screenSize.height,
                     width: screenSize.width,
                     name: product.name,
-                    barcode: product.barcode!,
+                    barcode: product.barcode ?? '',
                     cant: product.quantity,
                     price: product.price.toInt(),
                     onEdit: () => _showEditProductDialog(context, product),
@@ -75,7 +75,7 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
   }
 
   void _deleteProduct(int productId) {
-    context.read<ProductBloc>().add(
+    context.read<ProductBlocWeb>().add(
       DeleteProduct(productId: productId, inventoryId: widget.inventoryId),
     );
   }
@@ -112,7 +112,7 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
               final quantity = int.tryParse(quantityController.text) ?? 0;
 
               if (name.isNotEmpty && barcode.isNotEmpty && price > 0 && quantity > 0) {
-                context.read<ProductBloc>().add(
+                context.read<ProductBlocWeb>().add(
                   AddProduct(
                     name: name,
                     barcode: barcode,
@@ -163,10 +163,10 @@ class _ProductsWebScreenState extends State<ProductsWebScreen> {
               final quantity = int.tryParse(quantityController.text) ?? 0;
 
               if (name.isNotEmpty && barcode.isNotEmpty && price > 0 && quantity > 0) {
-                context.read<ProductBloc>().add(
+                context.read<ProductBlocWeb>().add(
                   DeleteProduct(productId: product.id, inventoryId: widget.inventoryId),
                 );
-                context.read<ProductBloc>().add(
+                context.read<ProductBlocWeb>().add(
                   AddProduct(
                     name: name,
                     barcode: barcode,

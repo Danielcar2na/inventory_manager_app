@@ -16,14 +16,13 @@ class _ProductsMobileState extends State<ProductsMobile> {
   @override
   void initState() {
     super.initState();
-    // Cargar productos cuando se entra a la pantalla
     context.read<ProductBloc>().add(LoadProducts(inventoryId: widget.inventoryId));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Productos del Inventario')),
+      appBar: AppBar(title: Text('Productos del Inventario'),backgroundColor: Colors.blueAccent.shade100,),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddProductPopup(context),
         backgroundColor: Colors.blueAccent,

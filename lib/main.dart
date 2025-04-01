@@ -56,14 +56,14 @@ class MyApp extends StatelessWidget {
           BlocProvider(
               create: (_) => InventoryBlocWeb(repository: inventoryRepository!))
         else
-          BlocProvider(
-              create: (_) => InventoryBloc(database: appDatabase!)),
+        //   BlocProvider(
+        //       create: (_) => InventoryBloc(database: appDatabase!)),
 
-        if (kIsWeb)
+        // if (kIsWeb)
           BlocProvider(
               create: (_) => ProductBlocWeb(repository: productRepository!))
-        else
-          BlocProvider(create: (_) => ProductBloc(database: appDatabase!)),
+        // else
+        //   BlocProvider(create: (_) => ProductBloc(database: appDatabase!)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

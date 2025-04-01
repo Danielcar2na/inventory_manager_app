@@ -17,7 +17,7 @@ class LoadProducts extends ProductEventWeb {
 }
 
 class AddProduct extends ProductEventWeb {
-  final int? id; // ← opcional para edición (web)
+  final int? id; 
   final String name;
   final String barcode;
   final double price;
