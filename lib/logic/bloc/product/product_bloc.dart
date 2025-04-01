@@ -14,6 +14,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<LoadProducts>(_onLoadProducts);
     on<AddProduct>(_onAddProduct);
     on<DeleteProduct>(_onDeleteProduct);
+    on<UpdateProduct>(_onUpdateProduct);
+
   }
 
   Future<void> _onLoadProducts(LoadProducts event, Emitter<ProductState> emit) async {
@@ -55,4 +57,23 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductError(message: 'Error deleting product: ${e.toString()}'));
     }
   }
+
+  Future<void> _onUpdateProduct(UpdateProduct event, Emitter<ProductState> emit) async {
+  try {
+    final updatedProduct = ProductModel(
+      id: event.id,
+      name: event.name,
+      barcode: event.barcode,
+      price: event.price,
+      quantity: event.quantity,
+      inventoryId: event.inventoryId,
+    );
+
+    await repository.updateProduct(updatedProduct);
+    add(LoadProducts(inventoryId: event.inventoryId));
+  } catch (e) {
+    emit(ProductError(message: 'Error al actualizar producto: $e'));
+  }
+}
+
 }

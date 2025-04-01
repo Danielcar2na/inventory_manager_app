@@ -36,7 +36,6 @@ class InventoryRepositoryImpl implements InventoryRepository {
     await _saveInventories(inventories);
   }
 
-  @override
  @override
 Future<void> updateInventory(int id, String newName) async {
   final inventories = await getInventories();

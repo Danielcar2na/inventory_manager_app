@@ -13,6 +13,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<LoadInventories>(_onLoadInventories);
     on<AddInventory>(_onAddInventory);
     on<DeleteInventory>(_onDeleteInventory);
+    on<UpdateInventory>(_onUpdateInventory);
   }
 
   Future<void> _onLoadInventories(
@@ -51,4 +52,13 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       emit(InventoryError('Error al eliminar inventario: ${e.toString()}'));
     }
   }
+  Future<void> _onUpdateInventory(UpdateInventory event, Emitter<InventoryState> emit) async {
+  try {
+    await repository.updateInventory(event.id, event.newName);
+    add(LoadInventories());
+  } catch (e) {
+    emit(InventoryError('Error al actualizar inventario: ${e.toString()}'));
+  }
+}
+
 }

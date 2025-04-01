@@ -165,38 +165,36 @@ class _InventoryMobileScreenState extends State<InventoryMobileScreen> {
   }
 
   void _showEditDialog(BuildContext context, int id, String currentName) {
-    TextEditingController nameController = TextEditingController(
-      text: currentName,
-    );
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('Editar Inventario'),
-            content: TextField(
-              controller: nameController,
-              decoration: InputDecoration(hintText: 'Nuevo Nombre'),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (nameController.text.isNotEmpty) {
-                    context.read<InventoryBloc>().add(DeleteInventory(id));
-                    context.read<InventoryBloc>().add(
-                      AddInventory(nameController.text),
-                    );
-                    context.read<InventoryBloc>().add(LoadInventories());
-                  }
-                  Navigator.pop(context);
-                },
-                child: Text('Guardar'),
-              ),
-            ],
-          ),
-    );
-  }
+  TextEditingController nameController = TextEditingController(
+    text: currentName,
+  );
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Editar Inventario'),
+      content: TextField(
+        controller: nameController,
+        decoration: InputDecoration(hintText: 'Nuevo Nombre'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancelar'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (nameController.text.isNotEmpty) {
+              context.read<InventoryBloc>().add(
+                UpdateInventory(id: id, newName: nameController.text),
+              );
+              Navigator.pop(context);
+            }
+          },
+          child: Text('Guardar'),
+        ),
+      ],
+    ),
+  );
+}
+
 }

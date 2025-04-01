@@ -118,54 +118,54 @@ class _ProductsMobileState extends State<ProductsMobile> {
     );
   }
 
-  void _showEditProductPopup(BuildContext context, dynamic product) {
-    final TextEditingController nameController = TextEditingController(text: product.name);
-    final TextEditingController barcodeController = TextEditingController(text: product.barcode);
-    final TextEditingController priceController = TextEditingController(text: product.price.toString());
-    final TextEditingController quantityController = TextEditingController(text: product.quantity.toString());
+ void _showEditProductPopup(BuildContext context, dynamic product) {
+  final TextEditingController nameController = TextEditingController(text: product.name);
+  final TextEditingController barcodeController = TextEditingController(text: product.barcode);
+  final TextEditingController priceController = TextEditingController(text: product.price.toString());
+  final TextEditingController quantityController = TextEditingController(text: product.quantity.toString());
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Editar Producto'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(controller: nameController, decoration: InputDecoration(labelText: 'Nombre')),
-              TextField(controller: barcodeController, decoration: InputDecoration(labelText: 'Código de barras')),
-              TextField(controller: priceController, decoration: InputDecoration(labelText: 'Precio'), keyboardType: TextInputType.number),
-              TextField(controller: quantityController, decoration: InputDecoration(labelText: 'Cantidad'), keyboardType: TextInputType.number),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancelar')),
-            ElevatedButton(
-              onPressed: () {
-                final updatedName = nameController.text;
-                final updatedBarcode = barcodeController.text;
-                final updatedPrice = double.tryParse(priceController.text) ?? 0;
-                final updatedQuantity = int.tryParse(quantityController.text) ?? 0;
-
-                if (updatedName.isNotEmpty && updatedBarcode.isNotEmpty && updatedPrice > 0 && updatedQuantity > 0) {
-                  context.read<ProductBloc>().add(DeleteProduct(productId: product.id, inventoryId: widget.inventoryId));
-                  context.read<ProductBloc>().add(
-                    AddProduct(
-                      name: updatedName,
-                      barcode: updatedBarcode,
-                      price: updatedPrice,
-                      quantity: updatedQuantity,
-                      inventoryId: widget.inventoryId,
-                    ),
-                  );
-                  Navigator.pop(context);
-                }
-              },
-              child: Text('Guardar'),
-            ),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Editar Producto'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: nameController, decoration: InputDecoration(labelText: 'Nombre')),
+            TextField(controller: barcodeController, decoration: InputDecoration(labelText: 'Código de barras')),
+            TextField(controller: priceController, decoration: InputDecoration(labelText: 'Precio'), keyboardType: TextInputType.number),
+            TextField(controller: quantityController, decoration: InputDecoration(labelText: 'Cantidad'), keyboardType: TextInputType.number),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancelar')),
+          ElevatedButton(
+            onPressed: () {
+              final updatedName = nameController.text;
+              final updatedBarcode = barcodeController.text;
+              final updatedPrice = double.tryParse(priceController.text) ?? 0;
+              final updatedQuantity = int.tryParse(quantityController.text) ?? 0;
+
+              if (updatedName.isNotEmpty && updatedBarcode.isNotEmpty && updatedPrice > 0 && updatedQuantity > 0) {
+                context.read<ProductBloc>().add(
+                  UpdateProduct(
+                    id: product.id,
+                    name: updatedName,
+                    barcode: updatedBarcode,
+                    price: updatedPrice,
+                    quantity: updatedQuantity,
+                    inventoryId: widget.inventoryId,
+                  ),
+                );
+                Navigator.pop(context);
+              }
+            },
+            child: Text('Guardar'),
+          ),
+        ],
+      );
+    },
+  );
+}
 }

@@ -28,3 +28,13 @@ class DeleteInventory extends InventoryEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class UpdateInventory extends InventoryEvent {
+  final int id;
+  final String newName;
+
+  UpdateInventory({required this.id, required this.newName});
+
+  @override
+  List<Object?> get props => [id, newName];
+}
